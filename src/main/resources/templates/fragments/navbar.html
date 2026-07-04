@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/movies}">Movie Booking</a>
+        <div class="d-flex gap-2 align-items-center">
+            <a class="btn btn-outline-primary btn-sm" th:href="@{/movies}">Movies</a>
+            <a class="btn btn-outline-primary btn-sm" th:href="@{/cinemas}" sec:authorize="hasRole('ADMIN')">Cinemas</a>
+
+            <span class="text-muted me-2" sec:authorize="isAuthenticated()">
+                Logged in as <strong sec:authentication="name"></strong>
+            </span>
+
+            <a class="btn btn-outline-secondary btn-sm" th:href="@{/profile}" sec:authorize="isAuthenticated()">Profile</a>
+
+            <form th:action="@{/logout}" method="post" class="d-inline" sec:authorize="isAuthenticated()">
+                <button type="submit" class="btn btn-outline-danger btn-sm">Logout</button>
+            </form>
+
+            <a class="btn btn-outline-secondary btn-sm" th:href="@{/login}" sec:authorize="isAnonymous()">Login</a>
+            <a class="btn btn-outline-secondary btn-sm" th:href="@{/register}" sec:authorize="isAnonymous()">Register</a>
+        </div>
+    </div>
+</nav>
+</body>
+</html>

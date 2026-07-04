@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Showtimes</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="container mt-4">
+    <h2 th:text="'Showtimes for ' + ${movie.title}"></h2>
+
+    <div class="mb-3">
+        Sort by:
+        <a th:href="@{'/movies/' + ${movie.id} + '/screenings'(sortBy='startTime', direction='asc')}" class="btn btn-sm btn-outline-secondary">Time ↑</a>
+        <a th:href="@{'/movies/' + ${movie.id} + '/screenings'(sortBy='startTime', direction='desc')}" class="btn btn-sm btn-outline-secondary">Time ↓</a>
+        <a th:href="@{'/movies/' + ${movie.id} + '/screenings'(sortBy='price', direction='asc')}" class="btn btn-sm btn-outline-secondary">Price ↑</a>
+        <a th:href="@{'/movies/' + ${movie.id} + '/screenings'(sortBy='price', direction='desc')}" class="btn btn-sm btn-outline-secondary">Price ↓</a>
+    </div>
+
+    <div class="mb-3">
+        Items per page:
+        <a th:href="@{'/movies/' + ${movie.id} + '/screenings'(size=5, sortBy=${currentSort}, direction=${currentDirection})}" class="btn btn-sm btn-outline-dark">5</a>
+        <a th:href="@{'/movies/' + ${movie.id} + '/screenings'(size=10, sortBy=${currentSort}, direction=${currentDirection})}" class="btn btn-sm btn-outline-dark">10</a>
+        <a th:href="@{'/movies/' + ${movie.id} + '/screenings'(size=20, sortBy=${currentSort}, direction=${currentDirection})}" class="btn btn-sm btn-outline-dark">20</a>
+    </div>
+
+    <table class="table table-striped">
+        <thead><tr><th>Date/Time</th><th>Screen</th><th>Price</th></tr></thead>
+        <tbody>
+        <tr th:each="screening : ${screeningPage.content}">
+            <td th:text="${screening.startTime}"></td>
+            <td th:text="${screening.screenName}"></td>
+            <td th:text="${screening.price} + ' RON'"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <nav th:if="${screeningPage.totalPages > 1}">
+        <ul class="pagination">
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, screeningPage.totalPages - 1)}"
+                th:classappend="${i == screeningPage.number} ? 'active'">
+                <a class="page-link" th:href="@{'/movies/' + ${movie.id} + '/screenings'(page=${i}, sortBy=${currentSort}, direction=${currentDirection})}" th:text="${i + 1}"></a>
+            </li>
+        </ul>
+    </nav>
+
+    <a class="btn btn-outline-secondary mt-3" th:href="@{/movies}">Back to movies</a>
+</div>
+</body>
+</html>

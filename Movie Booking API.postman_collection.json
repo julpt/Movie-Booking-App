@@ -1,0 +1,1343 @@
+{
+	"info": {
+		"_postman_id": "4bf518ae-fd18-4126-9011-ab9334313d2f",
+		"name": "Movie Booking API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "51457838",
+		"_collection_link": "https://cloudy-crescent-3684865.postman.co/workspace/JP's-Workspace~64f21ec9-ca6c-499f-8efb-8e2d2fd02ee8/collection/51457838-4bf518ae-fd18-4126-9011-ab9334313d2f?action=share&source=collection_link&creator=51457838"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"George Popescu\",\r\n  \"username\": \"george87\",\r\n  \"email\": \"george@test.com\",\r\n  \"password\": \"parola123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/auth/register",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register User 2",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Maria Popa\",\r\n  \"username\": \"mari35\",\r\n  \"email\": \"maria.popa@gmail.com\",\r\n  \"password\": \"testtest12\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/auth/register",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User 1",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"george87\",\r\n  \"password\": \"parola123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/auth/login",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Bad Username",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"george\",\r\n  \"password\": \"parola123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/auth/login",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Bad Request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"\",\r\n  \"username\": \"george87\",\r\n  \"email\": \"george.com\",\r\n  \"password\": \"a\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/auth/register",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cinema",
+			"item": [
+				{
+					"name": "Add Cinema",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Cinema City Megamall\",\r\n  \"city\": \"Bucuresti\",\r\n  \"address\": \"Bulevardul Pierre de Coubertin 3-5\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/cinemas",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"cinemas"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Screen To Cinema",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"4DX 3D\",\r\n  \"totalRows\": 8,\r\n  \"seatsPerRow\": 15,\r\n  \"cinemaId\": 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/cinemas/screens",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"cinemas",
+								"screens"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Cinemas",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/cinemas",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"cinemas"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Screens In Cinema",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/cinemas/3/screens",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"cinemas",
+								"3",
+								"screens"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Movie",
+			"item": [
+				{
+					"name": "Add Movie",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Avatar: Fire and Ash\",\r\n    \"description\": \"Jake and Neytiri's family grapples with grief, encountering a new, aggressive Na'vi tribe, the Ash People, who are led by the fiery Varang, as the conflict on Pandora escalates and a new moral focus emerges.\",\r\n    \"durationMinutes\": 197,\r\n    \"genre\": \"ACTION\",\r\n    \"rating\": \"PG-13\",\r\n    \"releaseDate\": \"2025-12-01\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/movies",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"movies"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Add Movie",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"Avatar: Fire and Ash\",\r\n    \"description\": \"Jake and Neytiri's family grapples with grief, encountering a new, aggressive Na'vi tribe, the Ash People, who are led by the fiery Varang, as the conflict on Pandora escalates and a new moral focus emerges.\",\r\n    \"durationMinutes\": 197,\r\n    \"genre\": \"ACTION\",\r\n    \"rating\": \"PG-13\",\r\n    \"releaseDate\": \"2025-12-01\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/api/movies",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"movies"
+									],
+									"query": [
+										{
+											"key": "",
+											"value": null,
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 13 Jan 2026 11:35:23 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 7,\n    \"title\": \"Avatar: Fire and Ash\",\n    \"description\": \"Jake and Neytiri's family grapples with grief, encountering a new, aggressive Na'vi tribe, the Ash People, who are led by the fiery Varang, as the conflict on Pandora escalates and a new moral focus emerges.\",\n    \"durationMinutes\": 197,\n    \"genre\": \"ACTION\",\n    \"rating\": \"PG-13\",\n    \"releaseDate\": \"2025-12-01\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Add Movie 2",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Titanic\",\r\n    \"description\": \"A seventeen-year-old aristocrat falls in love with a kind but poor artist aboard the luxurious, ill-fated R.M.S. Titanic.\",\r\n    \"durationMinutes\": 194,\r\n    \"genre\": \"DRAMA\",\r\n    \"rating\": \"G-13\",\r\n    \"releaseDate\": \"1997-11-01\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/movies",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"movies"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Movies",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/movies",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"movies"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Movie By Id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/movies/1",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"movies",
+								"1"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Movies",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/movies/search?query=king",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"movies",
+								"search"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "king"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Movie",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Titanic\",\r\n    \"description\": \"A seventeen-year-old aristocrat falls in love with a kind but poor artist aboard the luxurious, ill-fated R.M.S. Titanic.\",\r\n    \"durationMinutes\": 194,\r\n    \"genre\": \"DRAMA\",\r\n    \"rating\": \"PG-13\",\r\n    \"releaseDate\": \"1997-11-01\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/movies/6",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"movies",
+								"6"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Movie",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/movies/6",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"movies",
+								"6"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Movie With Screening",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/movies/8",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"movies",
+								"8"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Screening",
+			"item": [
+				{
+					"name": "Add Screening",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"movieId\": 7,\r\n  \"screenId\": 4,\r\n  \"startTime\": \"2026-01-24T18:00:00\",\r\n  \"price\": 50\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/screenings",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"screenings"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Add Screening",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"movieId\": 2,\r\n  \"screenId\": 5,\r\n  \"startTime\": \"2026-02-15T18:00:00\",\r\n  \"price\": 34\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/api/screenings",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"screenings"
+									],
+									"query": [
+										{
+											"key": "",
+											"value": null,
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 13 Jan 2026 11:08:57 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 3,\n    \"startTime\": \"2026-02-15T18:00:00\",\n    \"endTime\": \"2026-02-15T20:33:00\",\n    \"price\": 34,\n    \"movieTitle\": \"Inglourious Basterds\",\n    \"cinemaName\": \"Cinema City Megamall\",\n    \"screenName\": \"2D 1\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Add Colliding Screening",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"movieId\": 5,\r\n  \"screenId\": 5,\r\n  \"startTime\": \"2026-02-15T18:30:00\",\r\n  \"price\": 25\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/screenings",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"screenings"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Add Colliding Screening",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"movieId\": 5,\r\n  \"screenId\": 5,\r\n  \"startTime\": \"2026-02-15T18:30:00\",\r\n  \"price\": 25\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/api/screenings",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"screenings"
+									],
+									"query": [
+										{
+											"key": "",
+											"value": null,
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain;charset=UTF-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "40"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 13 Jan 2026 11:05:15 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								}
+							],
+							"cookie": [],
+							"body": "Screen is already occupied at this time!"
+						}
+					]
+				},
+				{
+					"name": "Get Screenings By Movie",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/screenings/movies/2",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"screenings",
+								"movies",
+								"2"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Occupied Seats For Screening",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/screenings/4/seats",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"screenings",
+								"4",
+								"seats"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Occupied Seats For Screening",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/api/screenings/4/seats",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"screenings",
+										"4",
+										"seats"
+									],
+									"query": [
+										{
+											"key": "",
+											"value": null,
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 13 Jan 2026 11:27:31 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"row\": 4,\n        \"number\": 7\n    },\n    {\n        \"row\": 4,\n        \"number\": 8\n    }\n]"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Booking",
+			"item": [
+				{
+					"name": "Book 2 Seats",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userId\": 3,\r\n  \"screeningId\": 4,\r\n  \"seatIds\": [\r\n    52,53\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/bookings",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"bookings"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Book 2 Seats",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"userId\": 3,\r\n  \"screeningId\": 4,\r\n  \"seatIds\": [\r\n    52,53\r\n  ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/api/bookings",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"bookings"
+									],
+									"query": [
+										{
+											"key": "",
+											"value": null,
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 13 Jan 2026 11:23:16 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"bookingId\": 1,\n    \"bookingTime\": \"2026-01-13T13:23:16.0425738\",\n    \"movieTitle\": \"Inglourious Basterds\",\n    \"cinemaName\": \"Cinema City AFI Cotroceni\",\n    \"screenName\": \"IMAX 3D 1\",\n    \"seats\": [\n        \"Row 4 - Seat 7\",\n        \"Row 4 - Seat 8\"\n    ],\n    \"totalPrice\": 80,\n    \"status\": \"CONFIRMED\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Book Occupied Seat",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userId\": 2,\r\n  \"screeningId\": 4,\r\n  \"seatIds\": [\r\n    52\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/bookings",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"bookings"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Book Occupied Seat",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"userId\": 2,\r\n  \"screeningId\": 4,\r\n  \"seatIds\": [\r\n    52\r\n  ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/api/bookings",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"bookings"
+									],
+									"query": [
+										{
+											"key": "",
+											"value": null,
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "Conflict",
+							"code": 409,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain;charset=UTF-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "40"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 13 Jan 2026 11:25:14 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "Seat at row 4 number 7 is already booked"
+						}
+					]
+				},
+				{
+					"name": "Book 3 Seats",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userId\": 3,\r\n  \"screeningId\": 6,\r\n  \"seatIds\": [\r\n    292,293,294\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/bookings",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"bookings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Bookings",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/bookings/users/3",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"users",
+								"3"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get User Bookings",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/api/bookings/users/3",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"bookings",
+										"users",
+										"3"
+									],
+									"query": [
+										{
+											"key": "",
+											"value": null,
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 13 Jan 2026 11:47:35 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"bookingId\": 2,\n        \"movieTitle\": \"Avatar: Fire and Ash\",\n        \"screeningStartTime\": \"2026-01-24T18:00:00\",\n        \"cinemaName\": \"Cinema City Megamall\",\n        \"screenName\": \"4DX 3D\",\n        \"seats\": [\n            \"Row 4 - Seat 7\",\n            \"Row 4 - Seat 8\",\n            \"Row 4 - Seat 9\"\n        ],\n        \"totalPrice\": 150,\n        \"status\": \"CONFIRMED\",\n        \"bookingTime\": \"2026-01-13T13:39:36.670428\"\n    },\n    {\n        \"bookingId\": 1,\n        \"movieTitle\": \"Inglourious Basterds\",\n        \"screeningStartTime\": \"2026-02-15T20:00:00\",\n        \"cinemaName\": \"Cinema City AFI Cotroceni\",\n        \"screenName\": \"IMAX 3D 1\",\n        \"seats\": [\n            \"Row 4 - Seat 7\",\n            \"Row 4 - Seat 8\"\n        ],\n        \"totalPrice\": 80,\n        \"status\": \"CONFIRMED\",\n        \"bookingTime\": \"2026-01-13T13:23:16.042574\"\n    }\n]"
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "BASE_URL",
+			"value": ""
+		}
+	]
+}

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="container mt-4">
+    <h2 class="mb-4">My Profile</h2>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-3">Name</dt>
+                <dd class="col-sm-9" th:text="${user.name}"></dd>
+                <dt class="col-sm-3">Username</dt>
+                <dd class="col-sm-9" th:text="${user.username}"></dd>
+                <dt class="col-sm-3">Email</dt>
+                <dd class="col-sm-9" th:text="${user.email}"></dd>
+            </dl>
+        </div>
+    </div>
+
+    <h3 class="mb-3">Favorite Movies</h3>
+    <ul class="list-group mb-4">
+        <li class="list-group-item" th:each="movie : ${favoriteMovies}" th:text="${movie.title}"></li>
+    </ul>
+    <p th:if="${favoriteMovies.isEmpty()}" class="text-muted">No favorite movies yet.</p>
+
+    <h3 class="mb-3">My Bookings</h3>
+    <div class="mb-3">
+        Sort by:
+        <a th:href="@{/profile(sortBy='bookingTime', direction='asc')}" class="btn btn-sm btn-outline-secondary">Booking Time ↑</a>
+        <a th:href="@{/profile(sortBy='bookingTime', direction='desc')}" class="btn btn-sm btn-outline-secondary">Booking Time ↓</a>
+        <a th:href="@{/profile(sortBy='screening.startTime', direction='asc')}" class="btn btn-sm btn-outline-secondary">Showing Time ↑</a>
+        <a th:href="@{/profile(sortBy='screening.startTime', direction='desc')}" class="btn btn-sm btn-outline-secondary">Showing Time ↓</a>
+    </div>
+    <table class="table table-striped">
+        <thead>
+        <tr><th>Booked At</th><th>Movie Title</th><th>Showing Time</th><th>Total Price</th><th>Status</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="booking : ${bookingPage.content}">
+            <td th:text="${#temporals.format(booking.bookingTime, 'dd.MM.yyyy HH:mm')}"></td>
+            <td th:text="${booking.movieTitle}"></td>
+            <td th:text="${#temporals.format(booking.screeningStartTime, 'dd.MM.yyyy HH:mm')}"></td>
+            <td th:text="${booking.totalPrice} + ' RON'"></td>
+            <td th:text="${booking.status}"></td>
+            <td>
+                <form th:action="@{'/bookings/' + ${booking.bookingId} + '/cancel'}" method="post"
+                      th:if="${booking.status.name() == 'CONFIRMED'}">
+                    <button type="submit" class="btn btn-sm btn-danger"
+                            onclick="return confirm('Cancel this booking?');">Cancel</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <nav th:if="${bookingPage.totalPages > 1}">
+        <ul class="pagination">
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, bookingPage.totalPages - 1)}"
+                th:classappend="${i == bookingPage.number} ? 'active'">
+                <a class="page-link" th:href="@{/profile(page=${i}, sortBy=${currentSort}, direction=${currentDirection})}" th:text="${i + 1}"></a>
+            </li>
+        </ul>
+    </nav>
+</div>
+</body>
+</html>

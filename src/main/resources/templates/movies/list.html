@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Movies</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between mb-3">
+        <h2>Movies</h2>
+        <a class="btn btn-primary" th:href="@{/movies/new}" sec:authorize="hasRole('ADMIN')">+ Add Movie</a>
+    </div>
+
+    <div class="mb-3">
+        Sort by:
+        <a th:href="@{/movies(sortBy='title', direction='asc')}" class="btn btn-sm btn-outline-secondary">Title ↑</a>
+        <a th:href="@{/movies(sortBy='title', direction='desc')}" class="btn btn-sm btn-outline-secondary">Title ↓</a>
+        <a th:href="@{/movies(sortBy='releaseDate', direction='asc')}" class="btn btn-sm btn-outline-secondary">Release Date ↑</a>
+        <a th:href="@{/movies(sortBy='releaseDate', direction='desc')}" class="btn btn-sm btn-outline-secondary">Release Date ↓</a>
+        <a th:href="@{/movies(sortBy='genre', direction='asc')}" class="btn btn-sm btn-outline-secondary">Genre ↑</a>
+        <a th:href="@{/movies(sortBy='genre', direction='desc')}" class="btn btn-sm btn-outline-secondary">Genre ↓</a>
+    </div>
+
+    <div class="mb-3">
+        Items per page:
+        <a th:href="@{/movies(size=5, sortBy=${currentSort}, direction=${currentDirection})}" class="btn btn-sm btn-outline-dark">5</a>
+        <a th:href="@{/movies(size=10, sortBy=${currentSort}, direction=${currentDirection})}" class="btn btn-sm btn-outline-dark">10</a>
+        <a th:href="@{/movies(size=20, sortBy=${currentSort}, direction=${currentDirection})}" class="btn btn-sm btn-outline-dark">20</a>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+        <tr><th>Title</th><th>Genre</th><th>Duration</th><th>Rating</th><th>Release Date</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="movie : ${moviePage.content}">
+            <td th:text="${movie.title}"></td>
+            <td th:text="${movie.genre}"></td>
+            <td th:text="${movie.durationMinutes} + ' min'"></td>
+            <td th:text="${movie.rating}"></td>
+            <td th:text="${movie.releaseDate}"></td>
+            <td sec:authorize="isAuthenticated()">
+                <form th:if="${favoriteIds != null and !favoriteIds.contains(movie.id)}"
+                      th:action="@{'/movies/' + ${movie.id} + '/favorite'}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-outline-warning">★ Add Favorite</button>
+                </form>
+                <form th:if="${favoriteIds != null and favoriteIds.contains(movie.id)}"
+                      th:action="@{'/movies/' + ${movie.id} + '/unfavorite'}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-warning">★ Remove Favorite</button>
+                </form>
+            </td>
+            <td>
+                <a class="btn btn-sm btn-info" th:href="@{'/movies/' + ${movie.id} + '/screenings'}">Showtimes</a>
+                <a class="btn btn-sm btn-secondary" th:href="@{'/movies/edit/' + ${movie.id}}" sec:authorize="hasRole('ADMIN')">Edit</a>
+                <form th:action="@{'/movies/delete/' + ${movie.id}}" method="post" style="display:inline;" sec:authorize="hasRole('ADMIN')">
+                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete?');">Delete</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Paginare -->
+    <nav th:if="${moviePage.totalPages > 1}">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${moviePage.first} ? 'disabled'">
+                <a class="page-link" th:href="@{/movies(page=${moviePage.number - 1}, sortBy=${currentSort}, direction=${currentDirection})}">Previous</a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, moviePage.totalPages - 1)}"
+                th:classappend="${i == moviePage.number} ? 'active'">
+                <a class="page-link" th:href="@{/movies(page=${i}, sortBy=${currentSort}, direction=${currentDirection})}" th:text="${i + 1}"></a>
+            </li>
+            <li class="page-item" th:classappend="${moviePage.last} ? 'disabled'">
+                <a class="page-link" th:href="@{/movies(page=${moviePage.number + 1}, sortBy=${currentSort}, direction=${currentDirection})}">Next</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Form</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="container mt-4">
+    <h2 th:text="${movieId != null} ? 'Edit Movie' : 'New Movie'">Movie Form</h2>
+
+    <form th:action="${movieId != null} ? @{'/movies/' + ${movieId}} : @{/movies}"
+          th:object="${movie}" method="post">
+
+        <div class="mb-3">
+            <label class="form-label">Title</label>
+            <input type="text" class="form-control" th:field="*{title}" required maxlength="255"/>
+            <div class="text-danger small" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" th:field="*{description}" rows="3" maxlength="1000"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Duration (minutes)</label>
+            <input type="number" class="form-control" th:field="*{durationMinutes}" required min="1"/>
+            <div class="text-danger small" th:if="${#fields.hasErrors('durationMinutes')}" th:errors="*{durationMinutes}"></div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Genre</label>
+            <select class="form-select" th:field="*{genre}" required>
+                <option value="" disabled selected>-- Select genre --</option>
+                <option th:each="g : ${genres}" th:value="${g}" th:text="${g}"></option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Rating</label>
+            <input type="text" class="form-control" th:field="*{rating}" maxlength="10"/>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Release Date</label>
+            <input type="date" class="form-control" th:field="*{releaseDate}"/>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a class="btn btn-outline-secondary" th:href="@{/movies}">Cancel</a>
+    </form>
+</div>
+</body>
+</html>

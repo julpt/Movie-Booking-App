@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+</head>
+<body>
+<div class="container mt-5" style="max-width: 450px;">
+    <h2 class="mb-4 text-center">Create an account</h2>
+
+    <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+    <form th:action="@{/register}" th:object="${registerRequest}" method="post">
+
+        <div class="mb-3">
+            <label class="form-label">Full Name</label>
+            <input type="text" class="form-control" th:field="*{name}" required maxlength="100"/>
+            <div class="text-danger small" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input type="text" class="form-control" th:field="*{username}" required maxlength="50"/>
+            <div class="text-danger small" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" th:field="*{email}" required/>
+            <div class="text-danger small" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-control" th:field="*{password}" required minlength="6"/>
+            <div class="text-danger small" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Register</button>
+    </form>
+
+    <p class="text-center mt-3">
+        Already have an account? <a th:href="@{/login}">Login here</a>
+    </p>
+
+    <a class="btn btn-secondary w-100 mt-5" th:href="@{/movies}">Go back</a>
+</div>
+</body>
+</html>
