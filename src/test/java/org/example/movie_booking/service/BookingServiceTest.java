@@ -1,12 +1,10 @@
 package org.example.movie_booking.service;
 
-import org.example.movie_booking.exceptions.ScreeningNotFoundException;
-import org.example.movie_booking.exceptions.SeatAlreadyBookedException;
-import org.example.movie_booking.exceptions.SeatNotInScreenException;
-import org.example.movie_booking.exceptions.UserNotFoundException;
+import org.example.movie_booking.exceptions.*;
 import org.example.movie_booking.mapper.BookingMapper;
 import org.example.movie_booking.model.dto.BookingRequest;
 import org.example.movie_booking.model.dto.BookingResponse;
+import org.example.movie_booking.model.dto.BookingStatusUpdateRequest;
 import org.example.movie_booking.model.entities.*;
 import org.example.movie_booking.repository.*;
 import org.junit.jupiter.api.Test;
@@ -248,6 +246,89 @@ public class BookingServiceTest {
         assertTrue(result.contains(resp2));
     }
 
+    @Test
+    void getAllBookings_returnsMappedList() {
+        Booking booking1 = new Booking();
+        Booking booking2 = new Booking();
+        BookingResponse resp1 = new BookingResponse(1L, "Movie1", LocalDateTime.now(), "Cinema1", "Screen1", List.of("R1-1"), 20.0, BookingStatus.CONFIRMED, LocalDateTime.now());
+        BookingResponse resp2 = new BookingResponse(2L, "Movie2", LocalDateTime.now(), "Cinema2", "Screen2", List.of("R2-2"), 20.0, BookingStatus.CONFIRMED, LocalDateTime.now());
+
+        when(bookingRepository.findAll()).thenReturn(List.of(booking1, booking2));
+        when(bookingMapper.toResponse(booking1)).thenReturn(resp1);
+        when(bookingMapper.toResponse(booking2)).thenReturn(resp2);
+
+        List<BookingResponse> result = bookingService.getAllBookings();
+
+        assertEquals(2, result.size());
+        verify(bookingRepository).findAll();
+    }
+
+    @Test
+    void getBookingById_whenExists_returnsResponse() {
+        Booking booking = Booking.builder().id(1L).build();
+        BookingResponse response = new BookingResponse(1L, "Movie", LocalDateTime.now(), "Cinema", "Screen", List.of("R1-1"), 20.0, BookingStatus.CONFIRMED, LocalDateTime.now());
+
+        when(bookingRepository.findById(1L)).thenReturn(Optional.of(booking));
+        when(bookingMapper.toResponse(booking)).thenReturn(response);
+
+        BookingResponse result = bookingService.getBookingById(1L);
+
+        assertNotNull(result);
+        verify(bookingRepository).findById(1L);
+    }
+
+    @Test
+    void getBookingById_whenNotFound_throwsException() {
+        when(bookingRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(BookingNotFoundException.class, () -> bookingService.getBookingById(99L));
+    }
+
+    @Test
+    void updateBookingStatus_toCancelled_updatesSuccessfully() {
+        Booking booking = Booking.builder().id(1L).status(BookingStatus.CONFIRMED).build();
+        Booking updated = Booking.builder().id(1L).status(BookingStatus.CANCELLED).build();
+        BookingStatusUpdateRequest request = new BookingStatusUpdateRequest(BookingStatus.CANCELLED);
+        BookingResponse response = new BookingResponse(1L, "Movie", LocalDateTime.now(), "Cinema", "Screen", List.of("R1-1"), 20.0, BookingStatus.CANCELLED, LocalDateTime.now());
+
+        when(bookingRepository.findById(1L)).thenReturn(Optional.of(booking));
+        when(bookingRepository.save(booking)).thenReturn(updated);
+        when(bookingMapper.toResponse(updated)).thenReturn(response);
+
+        BookingResponse result = bookingService.updateBookingStatus(1L, request);
+
+        assertEquals(BookingStatus.CANCELLED, result.status());
+        verify(bookingRepository).save(booking);
+    }
+
+    @Test
+    void updateBookingStatus_whenAlreadyCancelled_throwsException() {
+        Booking booking = Booking.builder().id(1L).status(BookingStatus.CANCELLED).build();
+        BookingStatusUpdateRequest request = new BookingStatusUpdateRequest(BookingStatus.CANCELLED);
+
+        when(bookingRepository.findById(1L)).thenReturn(Optional.of(booking));
+
+        assertThrows(InvalidBookingStatusException.class, () -> bookingService.updateBookingStatus(1L, request));
+        verify(bookingRepository, never()).save(any());
+    }
+
+    @Test
+    void deleteBooking_whenExists_deletesSuccessfully() {
+        Booking booking = Booking.builder().id(1L).build();
+        when(bookingRepository.findById(1L)).thenReturn(Optional.of(booking));
+
+        bookingService.deleteBooking(1L);
+
+        verify(bookingRepository).delete(booking);
+    }
+
+    @Test
+    void deleteBooking_whenNotFound_throwsException() {
+        when(bookingRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(BookingNotFoundException.class, () -> bookingService.deleteBooking(99L));
+        verify(bookingRepository, never()).delete(any());
+    }
 
 
 }

@@ -1,10 +1,28 @@
 # Movie Booking System
 
+## Demo
+### Link aplicatie: https://movie-booking-app-loxm.onrender.com/movies
+
+
+### Conturi de test
+
+**Utilizator ADMIN**
+- username: admin
+- password: parola
+
+**Utilizator normal (rol USER)**
+- username: testy
+- password: parola
+
+**Se pot crea utilizatori cu rol USER in pagina `/register`: https://movie-booking-app-loxm.onrender.com/register**
+
 ## 1. Descrierea proiectului
 - Ce face aplicatia: sistem de rezervare bilete cinema, cu gestiune
   filme/cinematografe/sali/rezervari, autentificare cu roluri.
 - Tehnologii folosite: Spring Boot, Spring Data JPA, Spring Security,
   Thymeleaf, PostgreSQL, H2, JUnit5/Mockito, Docker.
+- Deployment: Render free tier
+
 ## 2. Business Requirements
 1.  **Inregistrare Useri:** Utilizatorii pot crea un cont cu nume, email, parola.
 2.  **Catalog Filme:** Afisarea publica filmelor, inclusiv detalii (Genre, Rating).
@@ -24,57 +42,57 @@
 
 ### Descrierea entitatilor
 * **User** - cont utilizator, cu rol (USER/ADMIN)
-    - Movie - filmele disponibile
-    - Cinema - locațiile fizice
-    - Screen - sălile dintr-un cinema
-    - Seat - locurile dintr-o sală (generate automat)
-    - Screening - o proiecție (film + sală + oră + preț)
-    - Booking - o rezervare (user + screening + locuri)
-    - BookedSeat - asociere booking-seat-screening
-    - Payment - plata asociată unei rezervări (OneToOne cu Booking)
+  - Movie - filmele disponibile
+  - Cinema - locatiile fizice
+  - Screen - salile dintr-un cinema
+  - Seat - locurile dintr-o sala (generate automat)
+  - Screening - o proiectie (film + sala + ora + pret)
+  - Booking - o rezervare (user + screening + locuri)
+  - BookedSeat - asociere booking-seat-screening
+  - Payment - plata asociata unei rezervari (OneToOne cu Booking)
 * **Relatii**:
-    - User <-> Movie: @ManyToMany (favorite movies)
-    - Booking <-> Payment: @OneToOne
-    - Cinema -> Screen: @OneToMany / Screen → Cinema: @ManyToOne
-    - Screen -> Seat: @OneToMany / Seat → Screen: @ManyToOne
-    - Movie -> Screening: @OneToMany / Screening → Movie: @ManyToOne
-    - Screening -> Screen: @ManyToOne
-    - Booking -> User: @ManyToOne, Booking → Screening: @ManyToOne
-    - BookedSeat -> Booking/Seat/Screening: @ManyToOne (x3)
+  - User <-> Movie: @ManyToMany (favorite movies)
+  - Booking <-> Payment: @OneToOne
+  - Cinema -> Screen: @OneToMany / Screen -> Cinema: @ManyToOne
+  - Screen -> Seat: @OneToMany / Seat -> Screen: @ManyToOne
+  - Movie -> Screening: @OneToMany / Screening -> Movie: @ManyToOne
+  - Screening -> Screen: @ManyToOne
+  - Booking -> User: @ManyToOne, Booking -> Screening: @ManyToOne
+  - BookedSeat -> Booking/Seat/Screening: @ManyToOne (x3)
 
-Aplicatia respectaă separarea clasica pe 3 straturi: 
+Aplicatia respecta separarea clasica pe 3 straturi:
 * **Controller** (primeste request-urile HTTP, returneaza raspunsuri, fara logica de business)
 
-* **Service** (contine logica de business — validari, calcule, operatii intre entitati)
-* **Repository** (interfețe Spring Data
-JPA responsabile exclusiv de accesul la baza de date, fără logică suplimentară).
+* **Service** (contine logica de business: validari, calcule, operatii intre entitati)
+* **Repository** (interfete Spring Data JPA responsabile exclusiv de accesul la baza de date, fara logica suplimentara).
 
 Pentru fiecare entitate exista un `@RestController` (expune API REST,
 folosit pentru integrari externe/Postman) si, pentru entitatile principale
 (Movie, Cinema, User), un `@Controller` separat (randare Thymeleaf), ambele apeland
-același `Service` — astfel logica de business ramane centralizata intr-un
+același `Service` Logica de business ramane centralizata intr-un
 singur loc, indiferent de canalul de acces (JSON sau HTML). Exceptiile
 specifice fiecarei operatii (ex. `MovieNotFoundException`, `SeatAlreadyBookedException`)
 sunt tratate centralizat printr-un `@ControllerAdvice` (`GlobalExceptionHandler`),
-care mapeaza fiecare tip de exceptie la codul HTTP corespunzător.
+care mapeaza fiecare tip de exceptie la codul HTTP corespunzator.
+Aplicatia are 2 profiluri Spring: dev (PostgreSQL) si test (H2)
 
 
 ### 4. Setup instructions
-- Cerințe: Java 21, Maven, PostgreSQL instalat local (sau Docker)
+- Cerinte: Java 21, Maven, PostgreSQL instalat local (sau Docker)
 - Pasi:
-    1. Clone repo
-    2. Creeaza DB `cinema_db` în Postgres
-    3. Completeaza `application-dev.yml` cu credentiale
-    4. `mvn clean install`
-    5. `mvn spring-boot:run -Dspring-boot.run.profiles=dev`
-    6. Aplicatia porneste pe `http://localhost:8080`
+  1. Clone repo
+  2. Creeaza DB `cinema_db` in Postgres
+  3. Completeaza `application-dev.yml` cu credentiale
+  4. `mvn clean install`
+  5. `mvn spring-boot:run -Dspring-boot.run.profiles=dev`
+  6. Aplicatia porneste pe `http://localhost:8080`
 
 
 ### 5. API Documentation
 
 | Method | Endpoint | Descriere                                | Rol necesar |
 |--------|----------|------------------------------------------|-------------|
-| POST | `/api/auth/register` | Înregistrare user nou                    | Public |
+| POST | `/api/auth/register` | Inregistrare user nou                    | Public |
 | POST | `/api/auth/login` | Autentificare (test API)                 | Public |
 | GET | `/api/movies` | Lista filme                              | Public |
 | GET | `/api/movies/{id}` | Detalii film                             | Public |
@@ -83,8 +101,8 @@ care mapeaza fiecare tip de exceptie la codul HTTP corespunzător.
 | PUT | `/api/movies/{id}` | Actualizeaza film                        | ADMIN |
 | DELETE | `/api/movies/{id}` | Sterge film                              | ADMIN |
 | GET | `/api/cinemas` | Lista cinematografe                      | Public |
-| POST | `/api/cinemas` | Adaugă cinema                            | ADMIN |
-| POST | `/api/screens` | Adaugă sala (generează automat locurile) | ADMIN |
+| POST | `/api/cinemas` | Adauga cinema                            | ADMIN |
+| POST | `/api/screens` | Adauga sala (genereaza automat locurile) | ADMIN |
 | GET | `/api/cinemas/{id}/screens` | Lista sali dintr-un cinema               | Public |
 | POST | `/api/screenings` | Publica o proiectie noua                 | ADMIN |
 | GET | `/api/screenings/movie/{movieId}` | Proiectii disponibile pentru un film     | Public |
@@ -98,16 +116,17 @@ care mapeaza fiecare tip de exceptie la codul HTTP corespunzător.
 | GET | `/api/payments` | Lista plati                              | ADMIN |
 | GET | `/api/payments/{id}` | Detalii plata                            | ADMIN |
 
-### Interfață web (Thymeleaf)
+### Interfată web (Thymeleaf)
 
 | Rută | Descriere                                      | Acces |
 |------|------------------------------------------------|-------|
 | `/movies` | Lista filme (paginare, sortare, favorite)      | Public |
-| `/movies/new`, `/movies/edit/{id}` | Adaugă/editeaza film                           | ADMIN |
+| `/movies/new`, `/movies/edit/{id}` | Adauga/editeaza film                           | ADMIN |
 | `/movies/{id}/screenings` | Proiectii disponibile pentru un film           | Public |
-| `/cinemas` | Lista cinema (paginare, sortare)               | Public/ADMIN* |
+| `/cinemas` | Lista cinema (paginare, sortare)               | Public/ADMIN |
 | `/login`, `/register` | Autentificare / cont nou                       | Public |
 | `/profile` | Date cont + rezervari proprii + filme favorite | USER |
+
 
 
 ## Screenshots
@@ -123,6 +142,12 @@ care mapeaza fiecare tip de exceptie la codul HTTP corespunzător.
 ![img_2.png](img_2.png)
 **Lista filme, logat ca ADMIN:** ADMIN-ul poate adauga, modifica si sterge filme, pe langa optiunile unui utilizator obisnuit.
 
+![img_18.png](img_18.png)
+**Showtimes**: Lista ecranizarilor unui film din lista
+
+![img_17.png](img_17.png)
+Adaugare Film nou (acces doar ADMIN)
+
 ![img_1.png](img_1.png)
 **Pagina de Login:** Include optiunea de Remember me, cu durata de 24h
 
@@ -132,18 +157,29 @@ care mapeaza fiecare tip de exceptie la codul HTTP corespunzător.
 ![img_6.png](img_6.png)
 **Profilul Utilizatorului:** Include datele personale, filme Favorite, istoricul rezervarilor
 
+![img_13.png](img_13.png)
+Editare date personale
+
+![img_14.png](img_14.png)
+Profil, dupa modificarea numelul
 
 ![img_8.png](img_8.png)
-**Lista cinematografe, utilizator simplu:** 
+**Lista cinematografe, utilizator simplu:**
 
 ![img_7.png](img_7.png)
 **Lista cinematografe, logat ca ADMIN:** ADMIN-ul poate adauga, modifica si sterge cinematografe, pe langa optiunile publice
+
+![img_15.png](img_15.png)
+Adaugare Cinematograf nou (acces doar ADMIN)
+
+![img_16.png](img_16.png)
+Cinematograful nou apare in lista
 
 Exemplu logging
 ![img_9.png](img_9.png)
 
 Rulare teste:
-![img_10.png](img_10.png)
 ![img_11.png](img_11.png)
+![img_10.png](img_10.png)
 
-Link aplicatie:
+Link aplicatie: https://movie-booking-app-loxm.onrender.com/movies

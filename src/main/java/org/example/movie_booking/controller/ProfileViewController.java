@@ -2,13 +2,18 @@ package org.example.movie_booking.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.movie_booking.model.dto.BookingResponse;
+import org.example.movie_booking.model.dto.UpdateProfileRequest;
 import org.example.movie_booking.model.dto.UserResponse;
 import org.example.movie_booking.service.BookingService;
 import org.example.movie_booking.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
@@ -38,5 +43,21 @@ public class ProfileViewController {
         model.addAttribute("currentDirection", direction);
 
         return "profile";
+    }
+
+    @GetMapping("/profile/edit")
+    public String editProfileForm(Principal principal, Model model) {
+        UserResponse user = userService.getUserByUsername(principal.getName());
+        model.addAttribute("updateRequest", new UpdateProfileRequest(user.name(), user.email()));
+        return "profile-edit";
+    }
+
+    @PostMapping("/profile/edit")
+    public String updateProfile(Principal principal,
+                                @Validated @ModelAttribute("updateRequest") UpdateProfileRequest request,
+                                BindingResult result) {
+        if (result.hasErrors()) return "profile-edit";
+        userService.updateProfile(principal.getName(), request);
+        return "redirect:/profile";
     }
 }

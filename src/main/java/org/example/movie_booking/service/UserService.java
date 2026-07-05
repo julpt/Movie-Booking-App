@@ -5,6 +5,7 @@ import org.example.movie_booking.exceptions.MovieNotFoundException;
 import org.example.movie_booking.exceptions.UserNotFoundException;
 import org.example.movie_booking.mapper.UserMapper;
 import org.example.movie_booking.model.dto.MovieResponse;
+import org.example.movie_booking.model.dto.UpdateProfileRequest;
 import org.example.movie_booking.model.dto.UserResponse;
 import org.example.movie_booking.model.entities.Movie;
 import org.example.movie_booking.model.entities.User;
@@ -32,6 +33,28 @@ public class UserService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
         return userMapper.toResponse(user);
+    }
+
+    @Transactional
+    public UserResponse updateProfile(String username, UpdateProfileRequest request) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
+
+        user.setName(request.name());
+        user.setEmail(request.email());
+
+        User updated = userRepository.save(user);
+        log.info("User {} update profile", username);
+        return userMapper.toResponse(updated);
+    }
+
+    @Transactional
+    public void deleteUser(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
+
+        userRepository.delete(user);
+        log.info("User {} delete account", username);
     }
 
     @Transactional

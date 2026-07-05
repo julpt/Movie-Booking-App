@@ -13,14 +13,17 @@
 
     <div class="card mb-4">
         <div class="card-body">
-            <dl class="row mb-0">
-                <dt class="col-sm-3">Name</dt>
-                <dd class="col-sm-9" th:text="${user.name}"></dd>
-                <dt class="col-sm-3">Username</dt>
-                <dd class="col-sm-9" th:text="${user.username}"></dd>
-                <dt class="col-sm-3">Email</dt>
-                <dd class="col-sm-9" th:text="${user.email}"></dd>
-            </dl>
+            <div class="d-flex justify-content-between align-items-start">
+                <dl class="row mb-0 flex-grow-1">
+                    <dt class="col-sm-3">Name</dt>
+                    <dd class="col-sm-9" th:text="${user.name}"></dd>
+                    <dt class="col-sm-3">Username</dt>
+                    <dd class="col-sm-9" th:text="${user.username}"></dd>
+                    <dt class="col-sm-3">Email</dt>
+                    <dd class="col-sm-9" th:text="${user.email}"></dd>
+                </dl>
+                <a class="btn btn-sm btn-outline-secondary" th:href="@{/profile/edit}">Edit Profile</a>
+            </div>
         </div>
     </div>
 

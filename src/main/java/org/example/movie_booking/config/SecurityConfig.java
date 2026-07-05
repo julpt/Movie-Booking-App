@@ -35,8 +35,16 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
+
+                        // PUBLIC
+                        .requestMatchers("/webjars/**", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/login", "/register", "/error", "/api/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/movies", "/movies/{id}/*", "/cinemas").permitAll()  // doar READ pe movies e public
+                        .requestMatchers(HttpMethod.GET, "/api/movies/**", "/api/cinemas/**").permitAll()
+
+
                         // USER autentificat - booking-uri proprii, cinematografe
-                        .requestMatchers("/bookings/**", "/api/bookings/**", "/cinemas", "/profile", "/movies/{id}/favorite", "/movies/{id}/unfavorite").authenticated()
+                        .requestMatchers("/bookings/**", "/api/bookings/**", "/profile", "/profile/edit", "/movies/{id}/favorite", "/movies/{id}/unfavorite").authenticated()
 
                         // ADMIN
                         .requestMatchers("/movies/new", "/movies/edit/**", "/movies/delete/**").hasRole("ADMIN")
@@ -44,12 +52,6 @@ public class SecurityConfig {
                         .requestMatchers("/cinemas/**").hasRole("ADMIN")
                         .requestMatchers("/api/cinemas/**", "/api/screens/**").hasRole("ADMIN")
                         .requestMatchers("/api/payments/**").hasRole("ADMIN")
-
-                        // PUBLIC
-                        .requestMatchers("/webjars/**", "/css/**", "/js/**").permitAll()
-                        .requestMatchers("/login", "/register", "/error", "/api/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/movies", "/movies/{id}/*").permitAll()  // doar READ pe movies e public
-                        .requestMatchers(HttpMethod.GET, "/api/movies/**").permitAll()
 
                         // Orice altceva - REFUZAT by default
                         .anyRequest().denyAll()
