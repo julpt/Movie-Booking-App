@@ -6,11 +6,9 @@ import org.example.movie_booking.mapper.ScreeningMapper;
 import org.example.movie_booking.model.dto.BookedSeatResponse;
 import org.example.movie_booking.model.dto.ScreeningRequest;
 import org.example.movie_booking.model.dto.ScreeningResponse;
+import org.example.movie_booking.model.dto.SeatStatusResponse;
 import org.example.movie_booking.model.entities.*;
-import org.example.movie_booking.repository.BookedSeatRepository;
-import org.example.movie_booking.repository.MovieRepository;
-import org.example.movie_booking.repository.ScreenRepository;
-import org.example.movie_booking.repository.ScreeningRepository;
+import org.example.movie_booking.repository.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -35,6 +33,9 @@ public class ScreeningServiceTest {
 
     @Mock
     private ScreenRepository screenRepository;
+
+    @Mock
+    private SeatRepository seatRepository;
 
     @Mock
     private ScreeningMapper screeningMapper;
@@ -169,4 +170,69 @@ public class ScreeningServiceTest {
         when(screeningRepository.existsById(99L)).thenReturn(false);
         assertThrows(RuntimeException.class, () -> screeningService.getBookedSeats(99L));
     }
+    @Test
+    void whenMovieNotFound_getUpcomingScreeningsForMovie_throwsException() {
+        when(movieRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(MovieNotFoundException.class,
+                () -> screeningService.getUpcomingScreeningsForMovie(99L, 0, 5, "startTime", "asc"));
+        verify(screeningRepository, never()).findByMovieIdAndStartTimeAfter(any(), any(), any());
+    }
+    @Test
+    void whenScreeningExists_getAvailableSeats_excludesBookedSeats() {
+        Long screeningId = 1L;
+        Screen screen = Screen.builder().id(10L).build();
+        Screening screening = Screening.builder().id(screeningId).screen(screen).build();
+
+        Seat seat1 = Seat.builder().id(100L).rowNumber(1).seatNumber(1).build();
+        Seat seat2 = Seat.builder().id(101L).rowNumber(1).seatNumber(2).build();
+        BookedSeat bookedSeat = BookedSeat.builder().seat(seat1).build();
+
+        when(screeningRepository.findById(screeningId)).thenReturn(Optional.of(screening));
+        when(seatRepository.findByScreenId(10L)).thenReturn(List.of(seat1, seat2));
+        when(bookedSeatRepository.findByScreeningId(screeningId)).thenReturn(List.of(bookedSeat));
+
+        List<Seat> result = screeningService.getAvailableSeats(screeningId);
+
+        assertEquals(1, result.size());
+        assertEquals(101L, result.get(0).getId());
+    }
+
+    @Test
+    void whenScreeningNotFound_getAvailableSeats_throwsException() {
+        when(screeningRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class, () -> screeningService.getAvailableSeats(99L));
+    }
+    @Test
+    void whenScreeningExists_getSeatsWithStatus() {
+        Long screeningId = 1L;
+        Screen screen = Screen.builder().id(10L).build();
+        Screening screening = Screening.builder().id(screeningId).screen(screen).build();
+
+        Seat seat1 = Seat.builder().id(100L).rowNumber(1).seatNumber(2).build();
+        Seat seat2 = Seat.builder().id(101L).rowNumber(1).seatNumber(1).build();
+        BookedSeat bookedSeat = BookedSeat.builder().seat(seat1).build();
+
+        when(screeningRepository.findById(screeningId)).thenReturn(Optional.of(screening));
+        when(seatRepository.findByScreenId(10L)).thenReturn(List.of(seat1, seat2));
+        when(bookedSeatRepository.findByScreeningId(screeningId)).thenReturn(List.of(bookedSeat));
+
+        List<SeatStatusResponse> result = screeningService.getSeatsWithStatus(screeningId);
+
+        assertEquals(2, result.size());
+        assertEquals(101L, result.get(0).id());
+        assertTrue(result.get(0).available());
+        assertEquals(100L, result.get(1).id());
+        assertFalse(result.get(1).available());
+    }
+
+    @Test
+    void whenScreeningNotFound_getSeatsWithStatus_throwsException() {
+        when(screeningRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class, () -> screeningService.getSeatsWithStatus(99L));
+        verify(seatRepository, never()).findByScreenId(any());
+    }
+
 }

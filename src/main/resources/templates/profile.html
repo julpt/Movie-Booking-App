@@ -43,7 +43,7 @@
     </div>
     <table class="table table-striped">
         <thead>
-        <tr><th>Booked At</th><th>Movie Title</th><th>Showing Time</th><th>Total Price</th><th>Status</th><th>Actions</th></tr>
+        <tr><th>Booked At</th><th>Movie Title</th><th>Showing Time</th><th>Total Price</th><th>Payment</th><th>Status</th><th>Actions</th></tr>
         </thead>
         <tbody>
         <tr th:each="booking : ${bookingPage.content}">
@@ -51,6 +51,7 @@
             <td th:text="${booking.movieTitle}"></td>
             <td th:text="${#temporals.format(booking.screeningStartTime, 'dd.MM.yyyy HH:mm')}"></td>
             <td th:text="${booking.totalPrice} + ' RON'"></td>
+            <td th:text="${booking.paymentMethod != null} ? ${booking.paymentMethod} : 'N/A'"></td>
             <td th:text="${booking.status}"></td>
             <td>
                 <form th:action="@{'/bookings/' + ${booking.bookingId} + '/cancel'}" method="post"

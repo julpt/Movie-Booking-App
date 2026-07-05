@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -156,5 +157,35 @@ public class MovieServiceTest {
         verify(movieMapper).toResponse(movie2);
     }
 
+    @Test
+    void getMoviesPaged_returnsMappedPage() {
+        Movie movie = Movie.builder().id(1L).title("Inception").build();
+        Pageable pageable = PageRequest.of(0, 5, Sort.by("title").ascending());
+        Page<Movie> moviePage = new PageImpl<>(List.of(movie), pageable, 1);
+
+        when(movieRepository.findAll(any(Pageable.class))).thenReturn(moviePage);
+        when(movieMapper.toResponse(movie)).thenReturn(new MovieResponse(1L, "Inception", null, null, null, null, null));
+
+        Page<MovieResponse> result = movieService.getMoviesPaged(0, 5, "title", "asc");
+
+        assertEquals(1, result.getTotalElements());
+        assertEquals("Inception", result.getContent().get(0).title());
+        verify(movieRepository).findAll(any(Pageable.class));
+    }
+
+    @Test
+    void getMoviesPaged_withDescendingSort_appliesCorrectSort() {
+        Movie movie = Movie.builder().id(2L).title("Zootopia").build();
+        Pageable pageable = PageRequest.of(0, 5, Sort.by("title").descending());
+        Page<Movie> moviePage = new PageImpl<>(List.of(movie), pageable, 1);
+
+        when(movieRepository.findAll(any(Pageable.class))).thenReturn(moviePage);
+        when(movieMapper.toResponse(movie)).thenReturn(new MovieResponse(2L, "Zootopia", null, null, null, null, null));
+
+        Page<MovieResponse> result = movieService.getMoviesPaged(0, 5, "title", "desc");
+
+        assertEquals(1, result.getTotalElements());
+        verify(movieRepository).findAll(any(Pageable.class));
+    }
 
 }

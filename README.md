@@ -41,7 +41,7 @@
 ![diagrama_ERD.png](diagrama_ERD.png)
 
 ### Descrierea entitatilor
-* **Entitati**
+* **Entitati**:
   - User - cont utilizator, cu rol (USER/ADMIN)
   - Movie - filmele disponibile
   - Cinema - locatiile fizice
@@ -137,7 +137,7 @@ Aplicatia are 2 profiluri Spring: dev (PostgreSQL) si test (H2)
 ![img_12.png](img_12.png)
 **Lista filme, fara a fi logat:** A fost modificata dimensiunea paginii de la 5 la 10 elemente
 
-![img_3.png](img_3.png)!
+![img_3.png](img_3.png)
 **Lista filme, logat ca USER normal:** Lista publica, la care se adauga optiunea de a marca filme ca "Favorit"
 
 ![img_2.png](img_2.png)
@@ -145,6 +145,9 @@ Aplicatia are 2 profiluri Spring: dev (PostgreSQL) si test (H2)
 
 ![img_18.png](img_18.png)
 **Showtimes**: Lista ecranizarilor unui film din lista
+
+![img_19.png](img_19.png)
+**Booking**: Un utilizator logat poate rezerva unul sau mai multe dintre locurile disponibile
 
 ![img_17.png](img_17.png)
 Adaugare Film nou (acces doar ADMIN)

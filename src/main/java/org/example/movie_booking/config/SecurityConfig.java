@@ -44,7 +44,7 @@ public class SecurityConfig {
 
 
                         // USER autentificat - booking-uri proprii, cinematografe
-                        .requestMatchers("/bookings/**", "/api/bookings/**", "/profile", "/profile/edit", "/movies/{id}/favorite", "/movies/{id}/unfavorite").authenticated()
+                        .requestMatchers("/bookings/**", "/api/bookings/**", "/screenings/*/book", "/profile", "/profile/edit", "/movies/{id}/favorite", "/movies/{id}/unfavorite").authenticated()
 
                         // ADMIN
                         .requestMatchers("/movies/new", "/movies/edit/**", "/movies/delete/**").hasRole("ADMIN")

@@ -7,20 +7,21 @@ import org.example.movie_booking.mapper.ScreeningMapper;
 import org.example.movie_booking.model.dto.BookedSeatResponse;
 import org.example.movie_booking.model.dto.ScreeningRequest;
 import org.example.movie_booking.model.dto.ScreeningResponse;
+import org.example.movie_booking.model.dto.SeatStatusResponse;
 import org.example.movie_booking.model.entities.Movie;
 import org.example.movie_booking.model.entities.Screen;
 import org.example.movie_booking.model.entities.Screening;
-import org.example.movie_booking.repository.BookedSeatRepository;
-import org.example.movie_booking.repository.MovieRepository;
-import org.example.movie_booking.repository.ScreenRepository;
-import org.example.movie_booking.repository.ScreeningRepository;
+import org.example.movie_booking.model.entities.Seat;
+import org.example.movie_booking.repository.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,6 +33,7 @@ public class ScreeningService {
     private final ScreenRepository screenRepository;
     private final ScreeningMapper screeningMapper;
     private final BookedSeatRepository bookedSeatRepository;
+    private final SeatRepository seatRepository;
 
     public ScreeningResponse addScreening(ScreeningRequest request) {
         Movie movie = movieRepository.findById(request.movieId()).orElseThrow(() -> new MovieNotFoundException(request.movieId()));
@@ -83,6 +85,39 @@ public class ScreeningService {
         Pageable pageable = PageRequest.of(page, size, sort);
         return screeningRepository.findByMovieIdAndStartTimeAfter(movieId, LocalDateTime.now(), pageable)
                 .map(screeningMapper::toResponse);
+    }
+
+    public List<Seat> getAvailableSeats(Long screeningId) {
+        Screening screening = screeningRepository.findById(screeningId)
+                .orElseThrow(() -> new RuntimeException("Screening not found"));
+
+        List<Seat> allSeats = seatRepository.findByScreenId(screening.getScreen().getId());
+        List<Long> bookedSeatIds = bookedSeatRepository.findByScreeningId(screeningId)
+                .stream().map(bs -> bs.getSeat().getId()).toList();
+
+        return allSeats.stream()
+                .filter(seat -> !bookedSeatIds.contains(seat.getId()))
+                .toList();
+    }
+
+    @Transactional
+    public List<SeatStatusResponse> getSeatsWithStatus(Long screeningId) {
+        Screening screening = screeningRepository.findById(screeningId)
+                .orElseThrow(() -> new RuntimeException("Screening not found"));
+
+        List<Seat> allSeats = seatRepository.findByScreenId(screening.getScreen().getId());
+        List<Long> bookedSeatIds = bookedSeatRepository.findByScreeningId(screeningId)
+                .stream().map(bs -> bs.getSeat().getId()).toList();
+
+        return allSeats.stream()
+                .map(seat -> new SeatStatusResponse(
+                        seat.getId(),
+                        seat.getRowNumber(),
+                        seat.getSeatNumber(),
+                        !bookedSeatIds.contains(seat.getId())
+                ))
+                .sorted(Comparator.comparingInt(SeatStatusResponse::rowNumber).thenComparingInt(SeatStatusResponse::seatNumber))
+                .toList();
     }
 
 

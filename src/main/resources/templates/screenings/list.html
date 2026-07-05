@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Showtimes</title>
@@ -26,12 +26,19 @@
     </div>
 
     <table class="table table-striped">
-        <thead><tr><th>Date/Time</th><th>Screen</th><th>Price</th></tr></thead>
+        <thead>
+        <tr><th>Date/Time</th><th>Cinema</th><th>Screen</th><th>Price</th><th>Actions</th></tr>
+        </thead>
         <tbody>
         <tr th:each="screening : ${screeningPage.content}">
             <td th:text="${screening.startTime}"></td>
+            <td th:text="${screening.cinemaName}"></td>
             <td th:text="${screening.screenName}"></td>
             <td th:text="${screening.price} + ' RON'"></td>
+            <td>
+                <a class="btn btn-sm btn-primary" th:href="@{'/screenings/' + ${screening.id} + '/book'}"
+                   sec:authorize="isAuthenticated()">Book Ticket</a>
+            </td>
         </tr>
         </tbody>
     </table>

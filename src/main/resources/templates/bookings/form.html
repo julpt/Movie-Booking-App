@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Seats</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <style>
+        .seat-grid { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .seat-row { display: flex; gap: 8px; align-items: center; }
+        .row-label { width: 30px; font-weight: bold; text-align: right; margin-right: 8px; }
+        .seat-btn {
+            width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 6px; cursor: pointer; font-size: 0.85rem;
+        }
+        .seat-available { background-color: #d1e7dd; border: 1px solid #198754; }
+        .seat-available:hover { background-color: #a3cfbb; }
+        .seat-selected { background-color: #0d6efd !important; color: white; }
+        .seat-taken {
+            background-color: #e9ecef; border: 1px solid #adb5bd;
+            color: #adb5bd; cursor: not-allowed;
+        }
+        .screen-indicator {
+            width: 80%; height: 8px; background: #6c757d; border-radius: 4px;
+            margin: 0 auto 30px auto;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="container mt-4" style="max-width: 700px;">
+    <h2 class="mb-2 text-center">Select Your Seats</h2>
+    <div class="screen-indicator"></div>
+    <p class="text-center text-muted mb-4">Screen</p>
+
+    <form th:action="@{'/screenings/' + ${screeningId} + '/book'}" method="post" id="bookingForm">
+
+        <div class="seat-grid mb-4">
+            <div class="seat-row" th:each="rowEntry : ${seatsByRow}">
+                <span class="row-label" th:text="'R' + ${rowEntry.key}"></span>
+
+                <div th:each="seat : ${rowEntry.value}">
+                    <label th:if="${seat.available}" class="seat-btn seat-available"
+                           onchange="toggleSeat(this)">
+                        <input type="checkbox" name="seatIds" th:value="${seat.id}" style="display:none;"/>
+                        <span th:text="${seat.seatNumber}"></span>
+                    </label>
+
+                    <div th:unless="${seat.available}" class="seat-btn seat-taken">
+                        <span th:text="${seat.seatNumber}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-center gap-3 mb-4 small">
+            <span><span class="seat-btn seat-available" style="display:inline-flex; width:20px; height:20px;"></span> Available</span>
+            <span><span class="seat-btn seat-taken" style="display:inline-flex; width:20px; height:20px;"></span> Taken</span>
+            <span><span class="seat-btn seat-selected" style="display:inline-flex; width:20px; height:20px;"></span> Selected</span>
+        </div>
+
+        <div class="mb-3 text-center">
+            <label class="form-label">Payment Method</label>
+            <select name="paymentMethod" class="form-select" style="max-width: 200px; margin: 0 auto;">
+                <option value="CARD">Card</option>
+                <option value="PAYPAL">PayPal</option>
+                <option value="CASH">Cash</option>
+            </select>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Confirm Booking</button>
+            <a class="btn btn-outline-secondary" th:href="@{/movies}">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    function toggleSeat(checkbox) {
+        const label = checkbox.closest('.seat-btn');
+        if (label) {
+            label.classList.toggle('seat-selected', checkbox.checked);
+        }
+    }
+</script>
+</body>
+</html>

@@ -33,6 +33,9 @@ public class BookingServiceTest {
     @Mock
     private BookedSeatRepository bookedSeatRepository;
     @Mock
+    private PaymentRepository paymentRepository;
+
+    @Mock
     private BookingMapper bookingMapper;
 
     @InjectMocks
@@ -55,7 +58,8 @@ public class BookingServiceTest {
         BookingRequest request = new BookingRequest(
                 userId,
                 screeningId,
-                List.of(100L, 101L)
+                List.of(100L, 101L),
+                PaymentMethod.CARD
         );
 
         Screening screening = Screening.builder()
@@ -83,6 +87,9 @@ public class BookingServiceTest {
                 .build();
 
         when(bookingRepository.save(any(Booking.class))).thenReturn(savedBooking);
+        when(paymentRepository.save(any(Payment.class)))
+                .thenReturn(Payment.builder().id(1L).booking(savedBooking).amount(20.0).method(PaymentMethod.CARD)
+                        .build());
 
         BookingResponse response  = new BookingResponse(
                 50L,
@@ -93,7 +100,8 @@ public class BookingServiceTest {
                 List.of("R1-1", "R1-2"),
                 20.0,
                 BookingStatus.CONFIRMED,
-                LocalDateTime.now()
+                LocalDateTime.now(),
+                PaymentMethod.CARD
         );
 
         when(bookingMapper.toResponse(savedBooking))
@@ -116,7 +124,7 @@ public class BookingServiceTest {
 
     @Test
     void createBooking_whenUserNotFound_throwsUserNotFoundException() {
-        BookingRequest request = new BookingRequest(1L, 10L, List.of(1L));
+        BookingRequest request = new BookingRequest(1L, 10L, List.of(1L), PaymentMethod.CARD);
 
         when(userRepository.findById(1L))
                 .thenReturn(Optional.empty());
@@ -129,7 +137,7 @@ public class BookingServiceTest {
 
     @Test
     void createBooking_whenScreeningNotFound_throwsScreeningNotFoundException() {
-        BookingRequest request = new BookingRequest(1L, 10L, List.of(1L));
+        BookingRequest request = new BookingRequest(1L, 10L, List.of(1L), PaymentMethod.CARD);
 
         when(userRepository.findById(1L))
                 .thenReturn(Optional.of(new User()));
@@ -145,7 +153,7 @@ public class BookingServiceTest {
 
     @Test
     void createBooking_whenSeatNotInScreen_throwsSeatNotInScreenException() {
-        BookingRequest request = new BookingRequest(1L, 10L, List.of(1L));
+        BookingRequest request = new BookingRequest(1L, 10L, List.of(1L), PaymentMethod.CARD);
 
         User user = new User();
         Screen screen1 = new Screen();
@@ -176,7 +184,7 @@ public class BookingServiceTest {
 
     @Test
     void createBooking_whenSeatAlreadyBooked_throwsSeatAlreadyBookedException() {
-        BookingRequest request = new BookingRequest(1L, 10L, List.of(1L));
+        BookingRequest request = new BookingRequest(1L, 10L, List.of(1L), PaymentMethod.CARD);
 
         User user = new User();
         Screen screen = new Screen();
@@ -222,7 +230,8 @@ public class BookingServiceTest {
                 List.of("R1-1", "R1-2"),
                 20.0,
                 BookingStatus.CONFIRMED,
-                bookTime);
+                bookTime,
+                PaymentMethod.CARD);
         BookingResponse resp2 = new BookingResponse(2L,
                 "title",
                 startTime,
@@ -231,7 +240,8 @@ public class BookingServiceTest {
                 List.of("R4-12", "R4-13"),
                 20.0,
                 BookingStatus.CONFIRMED,
-                bookTime);
+                bookTime,
+                PaymentMethod.CARD);
 
         when(bookingRepository.findBookingsWithDetails(userId))
                 .thenReturn(List.of(booking1, booking2));
@@ -250,8 +260,8 @@ public class BookingServiceTest {
     void getAllBookings_returnsMappedList() {
         Booking booking1 = new Booking();
         Booking booking2 = new Booking();
-        BookingResponse resp1 = new BookingResponse(1L, "Movie1", LocalDateTime.now(), "Cinema1", "Screen1", List.of("R1-1"), 20.0, BookingStatus.CONFIRMED, LocalDateTime.now());
-        BookingResponse resp2 = new BookingResponse(2L, "Movie2", LocalDateTime.now(), "Cinema2", "Screen2", List.of("R2-2"), 20.0, BookingStatus.CONFIRMED, LocalDateTime.now());
+        BookingResponse resp1 = new BookingResponse(1L, "Movie1", LocalDateTime.now(), "Cinema1", "Screen1", List.of("R1-1"), 20.0, BookingStatus.CONFIRMED, LocalDateTime.now(), PaymentMethod.CARD);
+        BookingResponse resp2 = new BookingResponse(2L, "Movie2", LocalDateTime.now(), "Cinema2", "Screen2", List.of("R2-2"), 20.0, BookingStatus.CONFIRMED, LocalDateTime.now(), PaymentMethod.CARD);
 
         when(bookingRepository.findAll()).thenReturn(List.of(booking1, booking2));
         when(bookingMapper.toResponse(booking1)).thenReturn(resp1);
@@ -266,7 +276,7 @@ public class BookingServiceTest {
     @Test
     void getBookingById_whenExists_returnsResponse() {
         Booking booking = Booking.builder().id(1L).build();
-        BookingResponse response = new BookingResponse(1L, "Movie", LocalDateTime.now(), "Cinema", "Screen", List.of("R1-1"), 20.0, BookingStatus.CONFIRMED, LocalDateTime.now());
+        BookingResponse response = new BookingResponse(1L, "Movie", LocalDateTime.now(), "Cinema", "Screen", List.of("R1-1"), 20.0, BookingStatus.CONFIRMED, LocalDateTime.now(), PaymentMethod.CARD);
 
         when(bookingRepository.findById(1L)).thenReturn(Optional.of(booking));
         when(bookingMapper.toResponse(booking)).thenReturn(response);
@@ -289,7 +299,7 @@ public class BookingServiceTest {
         Booking booking = Booking.builder().id(1L).status(BookingStatus.CONFIRMED).build();
         Booking updated = Booking.builder().id(1L).status(BookingStatus.CANCELLED).build();
         BookingStatusUpdateRequest request = new BookingStatusUpdateRequest(BookingStatus.CANCELLED);
-        BookingResponse response = new BookingResponse(1L, "Movie", LocalDateTime.now(), "Cinema", "Screen", List.of("R1-1"), 20.0, BookingStatus.CANCELLED, LocalDateTime.now());
+        BookingResponse response = new BookingResponse(1L, "Movie", LocalDateTime.now(), "Cinema", "Screen", List.of("R1-1"), 20.0, BookingStatus.CANCELLED, LocalDateTime.now(), PaymentMethod.CARD);
 
         when(bookingRepository.findById(1L)).thenReturn(Optional.of(booking));
         when(bookingRepository.save(booking)).thenReturn(updated);

@@ -30,6 +30,7 @@ public class BookingService {
     private final UserRepository userRepository;
     private final SeatRepository seatRepository;
     private final BookedSeatRepository bookedSeatRepository;
+    private final PaymentRepository paymentRepository;
     private final BookingMapper bookingMapper;
 
     private static final Logger log = LoggerFactory.getLogger(BookingService.class);
@@ -53,12 +54,14 @@ public class BookingService {
             }
         }
 
+        Double totalPrice = screening.getPrice() * seats.size();
+
         Booking booking = Booking.builder()
                 .user(user)
                 .screening(screening)
                 .bookingTime(LocalDateTime.now())
                 .status(BookingStatus.CONFIRMED)
-                .totalPrice(screening.getPrice() * seats.size())
+                .totalPrice(totalPrice)
                 .bookedSeats(new ArrayList<>())
                 .build();
 
@@ -73,6 +76,14 @@ public class BookingService {
 
 
         Booking savedBooking = bookingRepository.save(booking);
+
+        Payment payment = Payment.builder()
+                .booking(savedBooking)
+                .amount(totalPrice)
+                .method(request.paymentMethod())
+                .paidAt(LocalDateTime.now())
+                .build();
+        paymentRepository.save(payment);
 
         log.info("Creating booking");   // LOGGING
         log.debug("Booking id: {} User id:{}", booking.getId(), user.getId());   // LOGGING
@@ -117,6 +128,15 @@ public class BookingService {
         }
 
         booking.setStatus(request.status());
+
+        // sterge locurile din booked_seats
+        if (request.status() == BookingStatus.CANCELLED) {
+            if (booking.getBookedSeats() != null) {
+                bookedSeatRepository.deleteAll(booking.getBookedSeats());
+                booking.getBookedSeats().clear();
+            }
+        }
+
         Booking updated = bookingRepository.save(booking);
         log.info("Booking {} status updated to {}", id, request.status());
         return bookingMapper.toResponse(updated);

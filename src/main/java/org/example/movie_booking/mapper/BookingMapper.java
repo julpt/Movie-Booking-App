@@ -23,7 +23,8 @@ public class BookingMapper {
                 seatLabels,
                 booking.getTotalPrice(),
                 booking.getStatus(),
-                booking.getBookingTime()
+                booking.getBookingTime(),
+                booking.getPayment() != null ? booking.getPayment().getMethod() : null
         );
     }
 }
