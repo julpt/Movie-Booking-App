@@ -41,7 +41,8 @@
 ![diagrama_ERD.png](diagrama_ERD.png)
 
 ### Descrierea entitatilor
-* **User** - cont utilizator, cu rol (USER/ADMIN)
+* **Entitati**
+  - User - cont utilizator, cu rol (USER/ADMIN)
   - Movie - filmele disponibile
   - Cinema - locatiile fizice
   - Screen - salile dintr-un cinema
@@ -116,7 +117,7 @@ Aplicatia are 2 profiluri Spring: dev (PostgreSQL) si test (H2)
 | GET | `/api/payments` | Lista plati                              | ADMIN |
 | GET | `/api/payments/{id}` | Detalii plata                            | ADMIN |
 
-### Interfată web (Thymeleaf)
+### Interfata web (Thymeleaf)
 
 | Rută | Descriere                                      | Acces |
 |------|------------------------------------------------|-------|
