@@ -1,8 +1,8 @@
 package org.example.movie_booking.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.movie_booking.model.dto.CinemaRequest;
-import org.example.movie_booking.model.dto.CinemaResponse;
+import org.example.movie_booking.exceptions.ScreenHasScreeningsException;
+import org.example.movie_booking.model.dto.*;
 import org.example.movie_booking.service.CinemaService;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -10,6 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 @Controller
 @RequestMapping("/cinemas")
@@ -68,4 +70,28 @@ public class CinemaViewController {
         cinemaService.deleteCinema(id);
         return "redirect:/cinemas";
     }
+
+    @GetMapping("/{cinemaId}/screens")
+    public String manageScreens(@PathVariable Long cinemaId, Model model) {
+        model.addAttribute("cinema", cinemaService.getCinemaById(cinemaId));
+        model.addAttribute("screens", cinemaService.getScreensByCinema(cinemaId));
+        model.addAttribute("screen", new ScreenRequest(null, null, null, cinemaId));
+        return "cinemas/screens";
+    }
+
+    @PostMapping("/{cinemaId}/screens")
+    public String addScreen(@PathVariable Long cinemaId,
+                            @ModelAttribute("screen") ScreenRequest request,
+                            Model model) {
+        try {
+            cinemaService.createScreen(request);
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("cinema", cinemaService.getCinemaById(cinemaId));
+            model.addAttribute("screens", cinemaService.getScreensByCinema(cinemaId));
+            return "cinemas/screens";
+        }
+        return "redirect:/cinemas/" + cinemaId + "/screens";
+    }
+
 }

@@ -2,15 +2,15 @@ package org.example.movie_booking.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.movie_booking.exceptions.CinemaNotFoundException;
-import org.example.movie_booking.model.dto.CinemaRequest;
-import org.example.movie_booking.model.dto.CinemaResponse;
-import org.example.movie_booking.model.dto.ScreenRequest;
-import org.example.movie_booking.model.dto.ScreenResponse;
+import org.example.movie_booking.exceptions.ScreenHasScreeningsException;
+import org.example.movie_booking.exceptions.ScreenNotFoundException;
+import org.example.movie_booking.model.dto.*;
 import org.example.movie_booking.model.entities.Cinema;
 import org.example.movie_booking.model.entities.Screen;
 import org.example.movie_booking.model.entities.Seat;
 import org.example.movie_booking.repository.CinemaRepository;
 import org.example.movie_booking.repository.ScreenRepository;
+import org.example.movie_booking.repository.ScreeningRepository;
 import org.example.movie_booking.repository.SeatRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +30,7 @@ public class CinemaService {
     private final CinemaRepository cinemaRepository;
     private final SeatRepository seatRepository;
     private final ScreenRepository screenRepository;
+    private final ScreeningRepository screeningRepository;
 
     private static final Logger log = LoggerFactory.getLogger(CinemaService.class);
 
@@ -133,6 +134,52 @@ public class CinemaService {
                 savedScreen.getTotalRows(), savedScreen.getSeatsPerRow(),
                 cinema.getName()
         );
+    }
+
+    public List<ScreenResponse> getAllScreens() {
+        return screenRepository.findAll().stream()
+                .map(screen -> new ScreenResponse(
+                        screen.getId(), screen.getName(), screen.getTotalRows(),
+                        screen.getSeatsPerRow(), screen.getCinema().getName()))
+                .toList();
+    }
+
+    public ScreenResponse getScreenById(Long screenId) {
+        Screen screen = screenRepository.findById(screenId)
+                .orElseThrow(() -> new ScreenNotFoundException(screenId));
+        return new ScreenResponse(screen.getId(), screen.getName(), screen.getTotalRows(),
+                screen.getSeatsPerRow(), screen.getCinema().getName());
+    }
+
+    @Transactional
+    public ScreenResponse updateScreenName(Long screenId, ScreenNameUpdateRequest request) {
+        Screen screen = screenRepository.findById(screenId)
+                .orElseThrow(() -> new ScreenNotFoundException(screenId));
+
+        screen.setName(request.name());
+        Screen updated = screenRepository.save(screen);
+        log.info("Updated screen {} name to: {}", screenId, request.name());
+
+        return new ScreenResponse(
+                updated.getId(), updated.getName(), updated.getTotalRows(),
+                updated.getSeatsPerRow(), updated.getCinema().getName()
+        );
+    }
+
+    @Transactional
+    public void deleteScreen(Long screenId) {
+        Screen screen = screenRepository.findById(screenId)
+                .orElseThrow(() -> new ScreenNotFoundException(screenId));
+
+        if (screeningRepository.existsByScreenId(screenId)) {
+            throw new ScreenHasScreeningsException(screenId);
+        }
+
+        List<Seat> seats = seatRepository.findByScreenId(screenId);
+        seatRepository.deleteAll(seats);
+
+        screenRepository.delete(screen);
+        log.info("Deleted screen with id: {}", screenId);
     }
 
     private CinemaResponse toResponse(Cinema c) {

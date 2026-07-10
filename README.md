@@ -165,7 +165,7 @@ Adaugare Film nou (acces doar ADMIN)
 Editare date personale
 
 ![img_14.png](img_14.png)
-Profil, dupa modificarea numelul
+Profil, dupa modificarea numelui
 
 ![img_8.png](img_8.png)
 **Lista cinematografe, utilizator simplu:**

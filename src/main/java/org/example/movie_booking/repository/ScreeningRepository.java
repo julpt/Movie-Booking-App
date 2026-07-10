@@ -19,6 +19,8 @@ public interface ScreeningRepository extends JpaRepository<Screening, Long> {
 
     List<Screening> findByScreenId(Long screenId);
 
+    boolean existsByScreenId(Long screenId);
+
     @Query("""
     SELECT COUNT(s) > 0 FROM Screening s
     WHERE s.screen.id = :screenId

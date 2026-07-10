@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Screens</title>
+  <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="container mt-4">
+  <h2 class="mb-4" th:text="'Screens for ' + ${cinema.name}"></h2>
+
+  <table class="table table-striped mb-4">
+    <thead><tr><th>Name</th><th>Rows</th><th>Seats per Row</th></tr></thead>
+    <tbody>
+    <tr th:each="screen : ${screens}">
+      <td th:text="${screen.name}"></td>
+      <td th:text="${screen.totalRows}"></td>
+      <td th:text="${screen.seatsPerRow}"></td>
+      <td>
+        <a class="btn btn-sm btn-secondary"
+           th:href="@{'/screens/' + ${screen.id} + '/edit'(cinemaId=${cinema.id})}">Edit Name</a>
+        <form th:action="@{'/screens/' + ${screen.id} + '/delete'}" method="post" style="display:inline;">
+          <input type="hidden" name="cinemaId" th:value="${cinema.id}"/>
+          <button type="submit" class="btn btn-sm btn-danger"
+                  onclick="return confirm('Delete this screen? Possible ONLY if it has no screenings.');">Delete</button>
+        </form>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+  <h4 class="mb-3">Add New Screen</h4>
+
+  <form th:action="@{'/cinemas/' + ${cinema.id} + '/screens'}" th:object="${screen}" method="post" style="max-width: 400px;">
+    <input type="hidden" th:field="*{cinemaId}"/>
+
+    <div class="mb-3">
+      <label class="form-label">Screen Name</label>
+      <input type="text" class="form-control" th:field="*{name}" required/>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Total Rows</label>
+      <input type="number" class="form-control" th:field="*{totalRows}" required min="1"/>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Seats per Row</label>
+      <input type="number" class="form-control" th:field="*{seatsPerRow}" required min="1"/>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add Screen</button>
+    <a class="btn btn-outline-secondary" th:href="@{/cinemas}">Back to Cinemas</a>
+  </form>
+</div>
+</body>
+</html>

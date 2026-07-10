@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Showing</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="container mt-4" style="max-width: 500px;">
+    <h2 class="mb-4" th:text="'Add Showing for ' + ${movie.title}"></h2>
+
+    <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+    <form th:action="@{'/movies/' + ${movie.id} + '/screenings'}" th:object="${screening}" method="post">
+
+        <input type="hidden" th:field="*{movieId}"/>
+
+        <div class="mb-3">
+            <label class="form-label">Screen</label>
+            <select class="form-select" th:field="*{screenId}" required>
+                <option value="" disabled selected>-- Select screen --</option>
+                <option th:each="screen : ${screens}" th:value="${screen.id}"
+                        th:text="${screen.cinemaName} + ' - ' + ${screen.name}"></option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Date & Time</label>
+            <input type="datetime-local" class="form-control" th:field="*{startTime}" required/>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Price (RON)</label>
+            <input type="number" step="0.01" class="form-control" th:field="*{price}" required min="0"/>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add Showing</button>
+        <a class="btn btn-outline-secondary" th:href="@{'/movies/' + ${movie.id} + '/screenings'}">Cancel</a>
+    </form>
+</div>
+</body>
+</html>

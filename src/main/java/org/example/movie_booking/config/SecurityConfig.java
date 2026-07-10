@@ -39,7 +39,7 @@ public class SecurityConfig {
                         // PUBLIC
                         .requestMatchers("/webjars/**", "/css/**", "/js/**").permitAll()
                         .requestMatchers("/login", "/register", "/error", "/api/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/movies", "/movies/{id}/*", "/cinemas").permitAll()  // doar READ pe movies e public
+                        .requestMatchers(HttpMethod.GET, "/movies", "/movies/{id}/*", "/cinemas", "/cinemas/{id}/screens").permitAll()  // doar READ pe movies e public
                         .requestMatchers(HttpMethod.GET, "/api/movies/**", "/api/cinemas/**").permitAll()
 
 
@@ -50,7 +50,8 @@ public class SecurityConfig {
                         .requestMatchers("/movies/new", "/movies/edit/**", "/movies/delete/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/movies","/api/movies").hasRole("ADMIN")
                         .requestMatchers("/cinemas/**").hasRole("ADMIN")
-                        .requestMatchers("/api/cinemas/**", "/api/screens/**").hasRole("ADMIN")
+                        .requestMatchers("/api/cinemas/**", "/api/screens/**","/movies/*/screenings","/movies/*/screenings/*").hasRole("ADMIN")
+                        .requestMatchers("/screens/*/edit", "/screens/*/delete").hasRole("ADMIN")
                         .requestMatchers("/api/payments/**").hasRole("ADMIN")
 
                         // Orice altceva - REFUZAT by default
